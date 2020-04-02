@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 
+import Container from 'react-bootstrap/Container';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+
+
 const CreateArticle = () => {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -30,43 +35,40 @@ const CreateArticle = () => {
     }
 
     return (
-        <form onSubmit = {handleSubmit}>
-            <fieldset>
-                <legend>Formulaire d'ajout d'articles</legend>
-                <div>
-                    <label>Ecrivez le titre :</label>
-                    <input
+        <Container>
+            <Form onSubmit={handleSubmit}>
+                <Form.Group controlId="article.title">
+                    <Form.Label>Titre de l'article</Form.Label>
+                    <Form.Control
                         type="text"
-                        id="titre"
                         name="title"
                         onChange={handleChange}
-                        value={title} />
-                </div>
-                <div>
-                    <label>Ecrivez un contenu :</label>
-                    <textarea
+                        value={title}
+                    />
+                </Form.Group>
+                <Form.Group controlId="article.content">
+                    <Form.Label>Contenu de l'article :</Form.Label>
+                    <Form.Control
+                        as="textarea"
                         name="content"
                         onChange={handleChange}
                         value={content}
-                        type="textarea"
-                        id="content"
                     />
-                </div>
-                <div>
-                    <label>Id de l'auteur :</label>
-                    <input
+                </Form.Group>
+                <Form.Group controlId="article.author">
+                    <Form.Label>Id de l'auteur :</Form.Label>
+                    <Form.Control
+                        type="number"
                         name="author"
                         onChange={handleChange}
                         value={author}
-                        type="text"
-                        id="auteur"
-                         />
-                </div>
+                    />
+                </Form.Group>
                 <div>
-                    <button type="submit">Envoyer</button>
+                    <Button variant="primary" type="submit">Créer l'article</Button>
                 </div>
-        </fieldset>
-    </form>
+            </Form>
+        </Container>
     )
 };
 export default CreateArticle;
