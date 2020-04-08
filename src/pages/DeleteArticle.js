@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -10,8 +11,37 @@ const DeleteArticle = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        console.log("id : ", id);
-    }
+        fetch('http://localhost:3001/api/articles/delete', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                id,
+            }),
+        })
+            .then((result) => {
+                return result.json();
+            })
+            .then(({ status, extra }) => {
+                if (status === "OK") {
+                    setId("");
+                    toast.success("L'article a bien été supprimé");
+                } else {
+                    toast.error(
+                        <div>
+                            Nous avons eu une erreur ! <br />
+                            {extra}
+                        </div>
+                    );
+                }
+            })
+            .catch((error) => {
+                toast.error("Nous avons eu une erreur !");
+            });
+    };
+    
 
     const handleChange = (event) => {
         switch (event.target.name) {
