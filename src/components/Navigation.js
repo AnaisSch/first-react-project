@@ -13,7 +13,7 @@ const Navigation = () => {
             </Nav.Item>
             <Nav.Item>
                 <Nav.Link as={Link} to="/articles/create">
-                    Créer un article
+                    Cr�er un article
                 </Nav.Link>
             </Nav.Item>
             <Nav.Item>

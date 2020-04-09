@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+/* import React, { useState, useEffect } from 'react';
 import { formatDate } from '../utils/date';
 import Card from 'react-bootstrap/Card';
 import CardDeck from 'react-bootstrap/CardDeck';
 import Container from 'react-bootstrap/Container';
 
-const Home = () => {
-    const [articles, setArticles] = useState([]);
+const LatestComments = () => {
+    
+    const [comments, setComments] = useState([]);
+    
+
     useEffect(() => {
-        fetch('http://localhost:3001/api/articles')
+        fetch('http://localhost:3001/api/comments?=')
             .then((result) => {
                 return result.json();
             })
-            .then(({status, articles}) => {
+            .then(({ status, comments }) => {
                 if (status === "OK") {
-                    setArticles(articles);
+                    setComments(comments);
                 } else {
                     console.log("error : ", status);
                 }
@@ -23,18 +25,13 @@ const Home = () => {
                 console.log("error : ", error);
             });
     }, []);
-    const renderedArticles = articles.map((article) => {
-        const { id, title, content, created_at, authorFirstname, authorLastname } = article;
+
+    const renderedComments = comments.map((comments) => {
+    const { articleId, content, authorFirstname, authorLastname, created_at } = comments;
         
-    
-    
+
         return (
-            <Card key={id}>
-                <Card.Header>
-                    <Card.Title as="h5">
-                        <Link to={"/article/" + id}>{title}</Link>
-                    </Card.Title>
-                </Card.Header>
+            <Card key={articleId}>
                 <Card.Body>
                     <Card.Text>
                         {content}
@@ -50,15 +47,15 @@ const Home = () => {
             </Card>
         );
     });
+
     return (
         <Container>
-            <h1>Page d'accueil</h1>
-            <h2>Derniers articles</h2>
+            <h2>Derniers commentaires</h2>
             <CardDeck>
-                {renderedArticles}
-            </CardDeck>    
+                {renderedComments}
+            </CardDeck>
         </Container>
     );
 };
 
-export default Home;
+export default LatestComments; */ 
