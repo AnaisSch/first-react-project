@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
@@ -7,21 +8,51 @@ import Button from 'react-bootstrap/Button';
 
 const CreateComment = () => {
     const [articleId, setArticleId] = useState("");
-    const [content, setContent] = useState("");
     const [author, setAuthor] = useState("");
+    const [content, setContent] = useState("");
+    
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("article_id", articleId);
-        console.log("content", content);
-        console.log("author", author);
-    }
+        fetch('http://localhost:3001/api/comments/create', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({
+                articleId,
+                author,
+                content,
+            }),
+        })
+            .then((result) => {
+                return result.json();
+            })
+            .then(({ status, extra }) => {
+                if (status === "OK") {
+                    setArticleId("");
+                    setAuthor("");
+                    setContent("");
+                    toast.success("Le commentaire a bien été ajouté");
+                } else {
+                    toast.error(
+                        <div>
+                            Nous avons eu une erreur ! <br />
+                            {extra}
+                        </div>
+                    );
+                }
+            })
+            .catch((error) => {
+                toast.error("Nous avons eu une erreur !");
+            });
+    };
+    
     const handleChange = (event) => {
-        console.log("Target name: ", event.target.name);
-        console.log("Target value: ", event.target.value);
 
         switch (event.target.name) {
-            case "article_id":
+            case "articleId":
                 setArticleId(event.target.value);
                 break;
             case "content":
@@ -42,7 +73,7 @@ const CreateComment = () => {
                     </Form.Label>
                 <Form.Control
                     type="text"
-                    name="article_id"
+                    name="articleId"
                     onChange={handleChange}
                     value={articleId}
                 />

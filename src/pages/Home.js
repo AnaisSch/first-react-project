@@ -25,6 +25,7 @@ const Home = () => {
     }, []);
     const renderedArticles = articles.map((article) => {
         const { id, title, content, created_at, authorFirstname, authorLastname } = article;
+        
         return (
             <Card key={id}>
                 <Card.Header>
