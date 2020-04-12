@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { formatDate } from '../utils/date';
-import Container from 'react-bootstrap/Container';
+import React, { useState, useEffect } from "react";
 import { toast } from 'react-toastify';
-import Card from 'react-bootstrap/Card';
+import { formatDate } from '../utils/date';
+import Container from "react-bootstrap/Container";
+import LatestComments from '../components/LatestComments';
 
-
-
-const ViewArticle = ({ match }) => {
+const ViewArticle = ({ match}) => {
     const { id } = match.params;
+    console.log(id);
+
     const [article, setArticle] = useState({});
 
     useEffect(() => {
@@ -19,52 +19,15 @@ const ViewArticle = ({ match }) => {
                 if (status === "OK") {
                     setArticle(article);
                 } else {
-                    toast.error("Il y a un soucis")
+                    toast.error("Oups... Nous avons eu un problème !");
                 }
             })
             .catch((error) => {
-                toast.error("Il y a une erreur")
-            })
-    }, [id])
-
-    const [comments, setComments] = useState([]);
-
-    useEffect(() => {
-        fetch('http://localhost:3001/api/comments?id=' + id)
-            .then((result) => {
-                return result.json();
-            })
-            .then(({ status, comments }) => {
-                if (status === "OK") {
-                    setComments(comments);
-                } else {
-                    toast.error("Y a un soucis... ");
-                }
-            })
-            .catch((error) => {
-                console.log("error : ", error)
-                toast.error("Soucis, nous avons un soucis");
+                toast.error("Oups... Nous avons eu un problème !");
+                console.log(error);
             })
     }, [id]);
 
-    const renderedComments = comments.map((comment) => {
-        const { id, content, authorFirstname, authorLastname, created_at} = comment;
-        return (
-            <Card key={id}>
-                <Card.Body>
-                    <Card.Text>
-                        {content}
-                    </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                    <small className="text-muted">
-                        Créé le {formatDate(created_at)}
-                        &nbsp;par {authorFirstname} {authorLastname.substring(0, 1)}.
-                        </small>
-                </Card.Footer>
-            </Card>
-        );
-    });
     return (
         <Container>
             <h1>{article.title}</h1>
@@ -72,16 +35,14 @@ const ViewArticle = ({ match }) => {
                 {article.content}
             </p>
             <p>
-                Posté le {formatDate(new Date())}<br />
+                posté le {formatDate(new Date())}<br />
                 par {article.authorFirstname} {article.authorLastname}
             </p>
             <div>
-                {renderedComments}
+                <LatestComments articleId = {id} /> 
             </div>
         </Container>
     );
 };
-
-
 
 export default ViewArticle;
