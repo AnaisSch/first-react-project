@@ -1,4 +1,8 @@
 export const formatDate = (date) => { // Export qui a pour but d'être multiple.
+    if (!date) {
+        return "";
+    }
+    
     let parsedDate = date;
 
     if (typeof date === "string") {

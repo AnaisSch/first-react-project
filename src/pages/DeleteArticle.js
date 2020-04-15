@@ -39,6 +39,7 @@ const DeleteArticle = () => {
             })
             .catch((error) => {
                 toast.error("Nous avons eu une erreur !");
+                console.log(error);
             });
     };
     

@@ -1,57 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { formatDate } from '../utils/date';
-import Card from 'react-bootstrap/Card';
-import CardDeck from 'react-bootstrap/CardDeck';
-import Container from 'react-bootstrap/Container';
+import CreateComment from '../components/CreateComment';
+import ListGroup from 'react-bootstrap/ListGroup';
+import { toast } from 'react-toastify';
+import ViewComment from '../components/ViewComment';
 
 const LatestComments = ({ articleId }) => {
     const [comments, setComments] = useState([]);
     
     useEffect(() => {
-        fetch('http://localhost:3001/api/comments?id=' + articleId)
+        fetch('http://localhost:3001/api/comments?articleId=' + articleId)
             .then((result) => {
                 return result.json();
             })
             .then(({ status, comments }) => {
                 if (status === "OK") {
-                    setComments(comments);
+                    setComments(comments.reverse());
                 } else {
-                    console.log("error : ", status);
+                    toast.error("Nous avons eu un probl�me !");
                 }
             })
             .catch((error) => {
+                toast.error("Nous avons eu un problème !");
                 console.log("error : ", error);
             });
-    }, [articleId])
+    }, [articleId]);
 
-    const renderedComments = comments.map((comments) => {
-        const { articleId, content, authorFirstname, authorLastname, created_at } = comments;
+    const handleCreate = (comment) => {
+        const newComments = [...comments];
+
+        newComments.push(comment);
+
+        setComments(newComments);
+    }
+
+    const handleDelete = (commentId) => {
+        const newComments = comments.filter((comment) => {
+            return comment.id !== commentId;
+        })
+
+        setComments(newComments);
+    }
+
+
+    const renderedComments = comments.map((comment) => {
 
         return (
-            <Card key={articleId}>
-                <Card.Body>
-                    <Card.Text>
-                        {content}
-                    </Card.Text>
-                </Card.Body>
-                <Card.Footer>
-                    <small className="text-muted">
-                        créé le&nbsp;
-                        {formatDate(created_at)}&nbsp;
-                        par&nbsp;{authorFirstname}&nbsp;{authorLastname.substring(0, 1)}.
-                    </small>
-                </Card.Footer>
-            </Card>
+            <ViewComment
+                key={comment.id}
+                comment={comment}
+                onDelete={handleDelete}
+            />
         );
     });
 
     return (
-        <Container>
-            <h5>Derniers commentaires : </h5>
-            <CardDeck>
-                {renderedComments}
-            </CardDeck>
-        </Container>
+        <ListGroup>
+            {renderedComments}
+            <ListGroup.Item>
+                <CreateComment
+                    articleId={articleId}
+                    onCreate={handleCreate}
+                />
+            </ListGroup.Item>
+        </ListGroup>
     );
 };
 

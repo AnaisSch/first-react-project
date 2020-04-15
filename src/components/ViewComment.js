@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { toast } from 'react-toastify';
-
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
+import { formatDate } from '../utils/date';
+import ListGroup from 'react-bootstrap/ListGroup';
+import { FaTrash } from 'react-icons/fa';
 import Button from 'react-bootstrap/Button';
 
-const DeleteComment = () => {
-    const [id, setId] = useState("");
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
+const ViewComment = ({ comment, onDelete }) => {
+    const { id, content, authorFirstname, authorLastname, created_at } = comment;
+
+    const handleClick = () => {
         fetch('http://localhost:3001/api/comments/delete', {
             method: "POST",
             headers: {
@@ -25,7 +25,8 @@ const DeleteComment = () => {
             })
             .then(({ status, extra }) => {
                 if (status === "OK") {
-                    setId("");
+                    onDelete(id);
+                    
                     toast.success("Le commentaire a bien été supprimé");
                 } else {
                     toast.error(
@@ -38,39 +39,29 @@ const DeleteComment = () => {
             })
             .catch((error) => {
                 toast.error("Nous avons eu une erreur !");
+                console.log(error);
             });
     };
 
-    const handleChange = (event) => {
-        switch (event.target.name) {
-            case "id":
-                setId(event.target.value);
-                break;
-            // no default
-        }
-    }
-
     return (
-    <Container>
-        <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="commentId">
-                <Form.Label>Id du commentaire</Form.Label>
-                <Form.Control
-                    type="number"
-                    name="id"
-                    onChange={handleChange}
-                    value={id}
-                />
-            </Form.Group>
+        <ListGroup.Item>
+            <p>
                 <Button
-                    variant="danger"
-                    type="submit">
-                    Supprimer un commentaire
+                    variant="outline-danger"
+                    onClick={handleClick}
+                >
+                    <FaTrash />
                 </Button>
-        </Form>
-    </Container>
-
+                &nbsp;
+                {content}
+            </p>
+            <small className="text-muted">
+                par {authorFirstname} {authorLastname}&nbsp;
+                le {formatDate(created_at)}
+            </small>
+        </ListGroup.Item>
     );
-}
 
-export default DeleteComment;
+};
+
+export default ViewComment;
