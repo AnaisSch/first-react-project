@@ -3,9 +3,11 @@ import CreateComment from '../components/CreateComment';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { toast } from 'react-toastify';
 import ViewComment from '../components/ViewComment';
+import { useCookies } from 'react-cookie';
 
 const LatestComments = ({ articleId }) => {
     const [comments, setComments] = useState([]);
+    const [cookies, setCookie] = useCookies();
     
     useEffect(() => {
         fetch('http://localhost:3001/api/comments?articleId=' + articleId)
@@ -52,16 +54,23 @@ const LatestComments = ({ articleId }) => {
             />
         );
     });
+    const renderCreateCommentLink = () => {
+        if (cookies.userToken) {
+            return (
+                <ListGroup.Item>
+                    <CreateComment
+                        articleId={articleId}
+                        onCreate={handleCreate}
+                    />
+                </ListGroup.Item>
+            )
+        }
+    }
 
     return (
         <ListGroup>
             {renderedComments}
-            <ListGroup.Item>
-                <CreateComment
-                    articleId={articleId}
-                    onCreate={handleCreate}
-                />
-            </ListGroup.Item>
+            {renderCreateCommentLink()}
         </ListGroup>
     );
 };

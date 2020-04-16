@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
 } from 'react-router-dom';
+import { CookiesProvider } from 'react-cookie';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { ToastContainer } from 'react-toastify';
 
@@ -19,18 +20,20 @@ import Signin        from './pages/Signin';
 
 const App = () => {
   return (
-    <Router>
-      <Navigation />
-      <Switch>
-        <Route exact path="/"             component={Home} />
-        <Route path="/signin"             component={Signin} />
-        <Route path="/articles/create/"   component={CreateArticle} />
-        <Route path="/articles/delete/"   component={DeleteArticle} />
-        <Route path="/article/:articleId" component={ViewArticle} />
-        <Route path="*"                   component={NotFound} />
-      </Switch>
-      <ToastContainer />
-    </Router>
+    <CookiesProvider>
+      <Router>
+        <Navigation />
+        <Switch>
+          <Route exact path="/"             component={Home} />
+          <Route path="/signin"             component={Signin} />
+          <Route path="/articles/create/"   component={CreateArticle} />
+          <Route path="/articles/delete/"   component={DeleteArticle} />
+          <Route path="/article/:articleId" component={ViewArticle} />
+          <Route path="*"                   component={NotFound} />
+        </Switch>
+        <ToastContainer />
+      </Router>
+      </CookiesProvider>
   );
 }
 

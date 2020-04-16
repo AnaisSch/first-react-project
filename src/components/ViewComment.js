@@ -4,10 +4,13 @@ import { formatDate } from '../utils/date';
 import ListGroup from 'react-bootstrap/ListGroup';
 import { FaTrash } from 'react-icons/fa';
 import Button from 'react-bootstrap/Button';
+import { useCookies } from 'react-cookie';
 
 
 const ViewComment = ({ comment, onDelete }) => {
-    const { id, content, authorFirstname, authorLastname, created_at } = comment;
+    const { id, content, authorId, authorFirstname, authorLastname, created_at } = comment;
+
+    const [cookies, setCookie] = useCookies();
 
     const handleClick = () => {
         fetch('http://localhost:3001/api/comments/delete', {
@@ -42,16 +45,23 @@ const ViewComment = ({ comment, onDelete }) => {
                 console.log(error);
             });
     };
-
-    return (
-        <ListGroup.Item>
-            <p>
+    const renderTrashButton = () => {
+        const user = cookies.user || {};
+        if (user.id === authorId) {
+            return (
                 <Button
                     variant="outline-danger"
                     onClick={handleClick}
                 >
                     <FaTrash />
                 </Button>
+            )
+        }
+    };
+    return (
+        <ListGroup.Item>
+            <p>
+                {renderTrashButton()}
                 &nbsp;
                 {content}
             </p>
